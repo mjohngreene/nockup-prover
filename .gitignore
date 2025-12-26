@@ -1,0 +1,28 @@
+gitignore
+# Rust
+/target/
+**/*.rs.bk
+*.pdb
+Cargo.lock
+
+# Nock compiled output
+*.jam
+out.jam
+prover/out.jam
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Build artifacts
+/prover/target/
