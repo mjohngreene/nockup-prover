@@ -1,4 +1,3 @@
-hoon
 ::  Prover: SNARK submission and tracking system
 ::  A NockApp for managing Zero-Knowledge Proof submissions
 ::

@@ -1,4 +1,3 @@
-rust
 //! Prover - SNARK Submission System
 //!
 //! A NockApp HTTP server for submitting and tracking Zero-Knowledge Proofs

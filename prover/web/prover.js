@@ -1,4 +1,3 @@
-javascript
 // API base URL
 const API_BASE = '/api/v1';
 
