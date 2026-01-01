@@ -1,0 +1,121 @@
+# Prover - SNARK Submission System
+
+A NockApp for submitting and tracking Zero-Knowledge Proofs on Nockchain.
+
+## Critical Context
+
+**IMPORTANT**: Nockchain does NOT yet support user-provided ZKP verification. This app stores SNARKs locally in preparation for future on-chain verification.
+
+## Tech Stack
+
+- **Hoon**: Kernel logic (Nock ISA compiled with `hoonc`)
+- **Rust**: HTTP server driver (Axum framework)
+- **NockApp Framework**: Crown (Rust interface) + Sword (Nock runtime)
+- **Frontend**: Vanilla HTML/CSS/JavaScript (no frameworks)
+
+## Build Commands
+````bash
+# Compile Hoon to Nock
+hoonc prover/hoon/prover.hoon -o prover/out.jam
+
+# Build Rust binary
+cargo build --release
+
+# Run server (development)
+RUST_LOG=debug RUST_BACKTRACE=1 cargo run
+
+# Full build with nockup
+nockup project build
+nockup project run
+````
+
+## Testing
+````bash
+# Test SNARK submission
+curl -X POST http://localhost:8080/api/v1/snark \
+  -H "Content-Type: application/json" \
+  -d @test-data/sample-submission.json
+
+# Check server logs
+tail -f target/debug/prover.log
+````
+
+## Repository Structure
+
+- `prover/hoon/` - Hoon kernel source (state management, SNARK tracking)
+- `prover/src/` - Rust HTTP driver (Axum server, API endpoints)
+- `prover/web/` - Static web assets (served by Axum)
+- `test-data/` - Sample SNARKs for testing
+
+## Critical Files
+
+- `prover/hoon/prover.hoon` - Core kernel logic, NEVER modify without understanding Nock
+- `prover/src/main.rs` - HTTP server entry point
+- `prover/web/prover.js` - Client-side API interactions
+
+## Code Conventions
+
+### Hoon
+- Use `::` for comments
+- Follow Nockchain's Hoon style guide
+- Test changes with `hoonc` before committing
+
+### Rust
+- Use `rustfmt` and `clippy`
+- Prefer explicit error handling with `Result<T, E>`
+- Keep noun serialization in helper functions
+- Document all public APIs
+
+### Web
+- Vanilla JS (no build step required)
+- Use modern ES6+ features
+- Validate Base64 encoding client-side
+
+## Git Workflow
+````bash
+# Always run tests before committing
+cargo test
+cargo fmt
+cargo clippy
+
+# Conventional commits
+git commit -m "feat: add SNARK deletion endpoint"
+git commit -m "fix: correct Base64 validation"
+````
+
+## Common Tasks
+
+**Add new API endpoint**:
+1. Add cause to Hoon `$cause` type
+2. Implement in `++poke` arm
+3. Add Rust handler function
+4. Wire up route in `main.rs`
+5. Update frontend if needed
+
+**Modify SNARK structure**:
+1. Update `$snark-entry` in Hoon
+2. Update Rust `SnarkDetails` struct
+3. Rebuild kernel: `hoonc prover/hoon/prover.hoon -o prover/out.jam`
+4. Update API responses
+5. Update web UI display
+
+## Known Issues
+
+- Hoon JSON serialization is simplified (TODO: use proper library)
+- Noun parsing in Rust is incomplete (uses placeholders)
+- localStorage not used (could track recent submissions client-side)
+
+## Future Integration
+
+When Nockchain adds ZKP verification:
+1. Add `nockchain-client` dependency
+2. Implement `submit_to_nockchain()` function
+3. Add tx hash tracking to SNARK state
+4. Update UI to show on-chain status
+5. Add block explorer links
+
+## Resources
+
+- NockApp docs: https://docs.nockchain.org/nockapp
+- Nockchain GitHub: https://github.com/nockchain/nockchain
+- Three-body-hybrid example: https://github.com/sigilante/three-body-hybrid
